@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HITCApp</string>
+
+    <string name="product_image_detail_description">Hình ảnh chi tiết sản phẩm</string>
+    <string name="product_image_description">Hình ảnh sản phẩm</string>
+    <string name="category_icon_description">Biểu tượng danh mục</string>
+    <string name="payment_notes">
+<resources>
+    <string name="back_button_description">Quay lại</string>
+    <string name="cart_button_description">Giỏ hàng</string>
+    <string name="all_dishes_title">Tất cả món ăn</string>
+
+    <string name="product_name_placeholder">Tên món ăn mẫu</string>
+    <string name="price_placeholder_currency">Giá: 00.000 VNĐ</string>
+    <string name="buy_button_text">Mua</string>
+    <string name="details_button_text">Chi tiết</string>
+</resources>
+</string>
+    <string name="monnhau">monnhau</string>
+    <string name="botoanvlog_example_com">Botoanvlog@example.com</string>
+    <string name="m_n_nh_u">Món nhậu</string>
+</resources>
