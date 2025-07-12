@@ -14,13 +14,23 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class LoginActivity extends AppCompatActivity {
 
     private EditText usernameEditText;
     private EditText passwordEditText;
     private Button loginButton;
-    // Bỏ biến loginSuccessful ở đây nếu bạn không dùng nó cho mục đích khác
-    // Nó chỉ nên là một biến cục bộ trong onClick hoặc được xử lý bởi logic bên ngoài
+    private RequestQueue requestQueue;
+    private static final String LOGIN_URL = "https://fakestoreapi.com/auth/login";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,54 +44,96 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Ánh xạ các View từ layout
+        // Initialize Volley RequestQueue
+        requestQueue = Volley.newRequestQueue(this);
+
+        // Map views from layout
         usernameEditText = findViewById(R.id.editTextText);
         passwordEditText = findViewById(R.id.editTextText2);
         loginButton = findViewById(R.id.button);
 
-        // Thiết lập sự kiện click cho nút Đăng nhập
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String username = usernameEditText.getText().toString().trim();
-                String password = passwordEditText.getText().toString().trim();
+        // Set up click listener for login button
+        loginButton.setOnClickListener(v -> {
+            String username = usernameEditText.getText().toString().trim();
+            String password = passwordEditText.getText().toString().trim();
 
-                if (username.equals("toan@gmail.com") && password.equals("123456")) {
-                    Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-
-                    // CHUYỂN SANG MAINACTIVITY VÀ KẾT THÚC LOGINACTIVITY TẠI ĐÂY!
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    // Cờ này sẽ xóa tất cả các Activity trên ngăn xếp
-                    // và đặt MainActivity làm Activity gốc mới
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish(); // Kết thúc LoginActivity để không quay lại được nữa
-                } else {
-                    Toast.makeText(LoginActivity.this, "Tài khoản hoặc mật khẩu không đúng!", Toast.LENGTH_SHORT).show();
-                }
+            // Validate input
+            if (username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(LoginActivity.this, "Vui lòng nhập tài khoản và mật khẩu", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            // Perform login request
+            performLogin(username, password);
         });
 
-
-
-        // Xử lý sự kiện cho "Quên mật khẩu?"
+        // Handle "Forgot Password?" click
         TextView forgotPasswordTextView = findViewById(R.id.textView4);
-        forgotPasswordTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, activity_forgot_password.class);
-                startActivity(intent);
-            }
+        forgotPasswordTextView.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, activity_forgot_password.class);
+            startActivity(intent);
         });
 
-        // Xử lý sự kiện cho "Đăng ký ở đây!"
+        // Handle "Register here!" click
         TextView registerTextView = findViewById(R.id.textView5);
-        registerTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
-            }
+        registerTextView.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
         });
+    }
+
+    private void performLogin(String username, String password) {
+        // Create JSON object for request body
+        JSONObject requestBody = new JSONObject();
+        try {
+            requestBody.put("username", username);
+            requestBody.put("password", password);
+        } catch (JSONException e) {
+            Toast.makeText(this, "Lỗi tạo yêu cầu đăng nhập", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Create Volley JsonObjectRequest
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST,
+                LOGIN_URL,
+                requestBody,
+                response -> {
+                    try {
+                        // Check if token is present in response
+                        if (response.has("token")) {
+                            String token = response.getString("token");
+                            Toast.makeText(LoginActivity.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+
+                            // Navigate to MainActivity and clear back stack
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Đăng nhập thất bại: Không nhận được token", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(this, "Lỗi xử lý phản hồi từ server", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    // Handle error
+                    String errorMessage = "Đăng nhập thất bại: ";
+                    if (error.networkResponse != null) {
+                        if (error.networkResponse.statusCode == 401) {
+                            errorMessage += "Tài khoản hoặc mật khẩu không đúng";
+                        } else {
+                            errorMessage += "Lỗi server (" + error.networkResponse.statusCode + ")";
+                        }
+                    } else {
+                        errorMessage += "Không thể kết nối đến server";
+                    }
+                    Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                }
+        );
+
+        // Add request to queue
+        requestQueue.add(jsonObjectRequest);
     }
 }

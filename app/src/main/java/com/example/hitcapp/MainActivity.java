@@ -1,13 +1,23 @@
 package com.example.hitcapp;
 
+import static android.content.ContentValues.TAG;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.hitcapp.Product;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,7 +47,9 @@ public class MainActivity extends AppCompatActivity implements
     private BottomNavigationView bottomNavigationView;
     private ImageButton cartImageButton;
     private ImageButton refreshButton;
-
+    private RequestQueue mRequestQueue;
+    private StringRequest mStringRequest;
+    private String url = "https://fakestoreapi.com/products";
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        getData();
         // --- Ánh xạ và thiết lập các View ---
         searchView = findViewById(R.id.search_bar);
         bannerImageView = findViewById(R.id.banner_image);
@@ -171,5 +183,25 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent = new Intent(MainActivity.this, ProductDetailActivity.class);
         intent.putExtra("product", product); // Truyền đối tượng Product
         startActivity(intent);
+    }
+    private void getData() {
+        // RequestQueue initialized
+        mRequestQueue = Volley.newRequestQueue(this);
+
+        // String Request initialized
+        mStringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                Toast.makeText(getApplicationContext(), "Response :" + response.toString(), Toast.LENGTH_LONG).show();//display the response on screen
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i(TAG, "Error :" + error.toString());
+            }
+        });
+
+        mRequestQueue.add(mStringRequest);
     }
 }
