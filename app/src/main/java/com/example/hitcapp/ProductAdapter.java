@@ -1,6 +1,5 @@
 package com.example.hitcapp;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,35 +9,38 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> implements Filterable {
 
-    private final Context context;
-    private List<Product> productList; // Dùng Product
-    private List<Product> productListFull; // Dùng Product
-    private final OnProductActionListener listener;
+    private Context context;
+    private List<Product> productList; // Danh sách sản phẩm hiện đang hiển thị
+    private List<Product> productListFull; // Bản sao đầy đủ của tất cả sản phẩm (dùng để lọc)
+    private OnProductActionListener listener;
 
-    public ProductAdapter(Context context, List<Product> productList, OnProductActionListener listener) { // Dùng Product
+    public interface OnProductActionListener {
+        void onBuyClick(Product product);
+        void onDetailsClick(Product product);
+    }
+
+    public ProductAdapter(Context context, List<Product> productList, OnProductActionListener listener) {
         this.context = context;
         this.productList = productList;
+        // KHỞI TẠO productListFull LÚC NÀY
         this.productListFull = new ArrayList<>(productList);
         this.listener = listener;
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void setProducts(List<Product> newProductList) { // Dùng Product
-        this.productList = newProductList;
-        this.productListFull = new ArrayList<>(newProductList);
-        notifyDataSetChanged();
+    // Phương thức MỚI: Cập nhật danh sách sản phẩm hiển thị trong RecyclerView
+    public void setProducts(List<Product> newProductList) {
+        this.productList.clear(); // Xóa danh sách cũ
+        this.productList.addAll(newProductList); // Thêm danh sách mới
+        notifyDataSetChanged(); // Thông báo cho RecyclerView rằng dữ liệu đã thay đổi
     }
 
     @NonNull
@@ -50,20 +52,21 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
-        Product product = productList.get(position); // Dùng Product
-        holder.productImage.setImageResource(product.getImageResId());
+        Product product = productList.get(position);
         holder.productName.setText(product.getName());
-        holder.productPrice.setText(formatCurrency(product.getPrice()));
+        holder.productPrice.setText(String.format("%,.0f VNĐ", product.getPrice()));
+        holder.productImage.setImageResource(product.getImageResId());
+        holder.productDescription.setText(product.getDescription());
 
         holder.buyButton.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onBuyClick(product); // Dùng Product
+                listener.onBuyClick(product);
             }
         });
 
         holder.detailsButton.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onDetailsClick(product); // Dùng Product
+                listener.onDetailsClick(product);
             }
         });
     }
@@ -81,12 +84,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     private Filter productFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            List<Product> filteredList = new ArrayList<>(); // Dùng Product
+            List<Product> filteredList = new ArrayList<>();
             if (constraint == null || constraint.length() == 0) {
+                // Nếu chuỗi tìm kiếm rỗng, hiển thị toàn bộ danh sách gốc
                 filteredList.addAll(productListFull);
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
-                for (Product item : productListFull) { // Dùng Product
+                for (Product item : productListFull) { // Lọc trên danh sách ĐẦY ĐỦ
                     if (item.getName().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }
@@ -100,20 +104,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             productList.clear();
-            productList.addAll((List<Product>) results.values); // Dùng Product
+            productList.addAll((List) results.values);
             notifyDataSetChanged();
         }
     };
-
-    public interface OnProductActionListener {
-        void onBuyClick(Product product); // Dùng Product
-        void onDetailsClick(Product product); // Dùng Product
-    }
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
         ImageView productImage;
         TextView productName;
         TextView productPrice;
+        TextView productDescription;
         Button buyButton;
         Button detailsButton;
 
@@ -122,13 +122,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             productImage = itemView.findViewById(R.id.product_image);
             productName = itemView.findViewById(R.id.product_name);
             productPrice = itemView.findViewById(R.id.product_price);
+            productDescription = itemView.findViewById(R.id.product_description);
             buyButton = itemView.findViewById(R.id.buy_button);
             detailsButton = itemView.findViewById(R.id.details_button);
         }
-    }
-
-    private String formatCurrency(double amount) {
-        NumberFormat format = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-        return format.format(amount).replace("₫", "đ");
     }
 }

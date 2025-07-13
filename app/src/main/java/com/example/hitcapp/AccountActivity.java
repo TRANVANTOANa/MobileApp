@@ -77,7 +77,13 @@ public class AccountActivity extends AppCompatActivity {
                 // Optional: finish current activity if you don't want to keep it in back stack
                 // finish();
                 return true;
-
+            } else if (id == R.id.nav_products) {
+                Toast.makeText(this, "Chuyển đến Món ăn", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, activity_all_products.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                finish();
+                return true;
             } else if (id == R.id.nav_promo) {
                 Toast.makeText(this, "Chuyển đến Khuyến mãi", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, PromotionActivity.class));

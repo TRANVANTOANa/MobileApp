@@ -51,6 +51,13 @@ public class ProductDetailActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish(); // Đóng Activity hiện tại
                 return true;
+            } else if (id == R.id.nav_products) {
+                Toast.makeText(this, "Chuyển đến Món ăn", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ProductDetailActivity.this, activity_all_products.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                finish();
+                return true;
             } else if (id == R.id.nav_promo) {
                 Toast.makeText(ProductDetailActivity.this, "Chuyển đến Khuyến mãi", Toast.LENGTH_SHORT).show(); // SỬA TỪ MainActivity.this
                 startActivity(new Intent(ProductDetailActivity.this, PromotionActivity.class));

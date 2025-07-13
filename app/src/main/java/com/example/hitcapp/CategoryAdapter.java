@@ -1,24 +1,30 @@
 package com.example.hitcapp;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
-    private List<Category> categoryList;
-    private OnCategoryClickListener listener;
+    private final Context context;
+    private final List<Category> categoryList;
+    private final OnCategoryClickListener listener;
 
+    // Interface để xử lý sự kiện click vào một danh mục
     public interface OnCategoryClickListener {
         void onCategoryClick(Category category);
     }
 
-    public CategoryAdapter(List<Category> categoryList, OnCategoryClickListener listener) {
+    public CategoryAdapter(Context context, List<Category> categoryList, OnCategoryClickListener listener) {
+        this.context = context;
         this.categoryList = categoryList;
         this.listener = listener;
     }
@@ -26,8 +32,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     @NonNull
     @Override
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // ĐÃ SỬA LỖI TẠI ĐÂY: Sử dụng R.layout.item_category
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_category, parent, false);
+        // "Phồng" layout item_category.xml cho mỗi mục
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category, parent, false);
         return new CategoryViewHolder(view);
     }
 
@@ -36,6 +42,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         Category category = categoryList.get(position);
         holder.categoryName.setText(category.getName());
         holder.categoryIcon.setImageResource(category.getIconResId());
+
+        // Thiết lập OnClickListener cho toàn bộ item
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onCategoryClick(category);
@@ -48,15 +56,15 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         return categoryList.size();
     }
 
+    // ViewHolder giúp giữ các tham chiếu đến các View con trong mỗi mục
     public static class CategoryViewHolder extends RecyclerView.ViewHolder {
         ImageView categoryIcon;
         TextView categoryName;
 
         public CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
-            // Đảm bảo item_category.xml có các ID này:
-            categoryIcon = itemView.findViewById(R.id.category_icon);
-            categoryName = itemView.findViewById(R.id.category_name);
+            categoryIcon = itemView.findViewById(R.id.category_icon); // ID của ImageView trong item_category.xml
+            categoryName = itemView.findViewById(R.id.category_name); // ID của TextView trong item_category.xml
         }
     }
 }

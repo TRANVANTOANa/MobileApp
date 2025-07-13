@@ -61,7 +61,13 @@ public class PromotionActivity extends AppCompatActivity {
                 // Optional: finish current activity if you don't want to keep it in back stack
                 // finish();
                 return true;
-
+            } else if (id == R.id.nav_products) {
+                Toast.makeText(this, "Chuyển đến Món ăn", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, activity_all_products.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                finish();
+                return true;
             } else if (id == R.id.nav_promo) { // ID for Promotions
                 // Already on PromotionActivity, just show a toast or do nothing
                 Toast.makeText(this, "Bạn đang ở Khuyến mãi", Toast.LENGTH_SHORT).show();

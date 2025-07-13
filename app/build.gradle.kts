@@ -30,7 +30,14 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 }
+dependencies {
+    // ... các dependencies hiện có của bạn ...
 
+
+    implementation ("com.squareup.okhttp3:okhttp:4.12.0")// Sử dụng phiên bản mới nhất
+    // Gson (để chuyển đổi đối tượng Java thành JSON và ngược lại)
+    implementation ("com.google.code.gson:gson:2.10.1") // Sử dụng phiên bản mới nhất
+}
 dependencies {
 
     implementation(libs.appcompat)
