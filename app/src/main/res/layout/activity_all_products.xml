@@ -6,33 +6,49 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AllProductsActivity"> <!-- Sửa tên lớp theo quy ước Java -->
+    android:background="@color/light_blue"
+    tools:context=".AllProductsActivity"> <LinearLayout
+    android:id="@+id/top_bar_layout"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
+    android:gravity="center_vertical"
+    android:background="@android:color/white"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
-    <!-- SearchView để tìm kiếm món ăn -->
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_weight="1"
         android:queryHint="Tìm kiếm món ăn..."
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:iconifiedByDefault="false"
+        android:layout_marginEnd="8dp" /> <ImageButton
+    android:id="@+id/cartImageButton"
+    android:layout_width="48dp"
+    android:layout_height="48dp"
+    android:background="?attr/selectableItemBackgroundBorderless"
+    android:contentDescription="@string/cart_description"
+    android:scaleType="fitCenter"
+    app:srcCompat="@drawable/ic_shopping_cart" /> </LinearLayout>
 
-    <!-- RecyclerView để hiển thị danh sách sản phẩm -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_products"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:padding="8dp"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_view" />
-
-    <!-- BottomNavigationView để điều hướng -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
+        app:layout_constraintTop_toBottomOf="@id/top_bar_layout" /> <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

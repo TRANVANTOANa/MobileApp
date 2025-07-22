@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+// THÊM DÒNG NÀY: Import ImageButton
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +26,10 @@ public class ProductDetailActivity extends AppCompatActivity {
     private Product currentProduct;
     // Khai báo biến cho BottomNavigationView
     private BottomNavigationView bottomNavigationView; // DÒNG NÀY ĐÃ ĐƯỢC THÊM/SỬA
+
+    // THÊM DÒNG NÀY: Khai báo biến cho nút giỏ hàng
+    private ImageButton detailCartButton;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -75,6 +81,16 @@ public class ProductDetailActivity extends AppCompatActivity {
         // Đặt mục được chọn mặc định. Nếu bạn không muốn nó được chọn mặc định
         // hoặc muốn nó phản ánh mục mà bạn đã đến từ đó, hãy điều chỉnh logic này.
         // bottomNavigationView.setSelectedItemId(R.id.nav_home); // DÒNG NÀY CÓ THỂ TÙY CHỌN BỎ ĐI
+
+
+        // THÊM 2 DÒNG NÀY để khởi tạo và thiết lập OnClickListener cho nút giỏ hàng
+        detailCartButton = findViewById(R.id.detail_cart_button);
+        detailCartButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ProductDetailActivity.this, CartActivity.class);
+            startActivity(intent);
+            Toast.makeText(ProductDetailActivity.this, "Chuyển đến Giỏ hàng", Toast.LENGTH_SHORT).show();
+        });
+
 
         // Ánh xạ các View còn lại
         ImageView productImage = findViewById(R.id.detail_product_image);

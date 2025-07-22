@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements
         productRecyclerView = findViewById(R.id.product_recyclerview);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         cartImageButton = findViewById(R.id.cartImageButton);
-        refreshButton = findViewById(R.id.refresh_button);
+
 
         // --- 2. Thiết lập các phần tử UI ban đầu ---
         bannerImageView.setImageResource(R.drawable.baner);
@@ -126,20 +126,10 @@ public class MainActivity extends AppCompatActivity implements
             Toast.makeText(MainActivity.this, "Chuyển đến Giỏ hàng", Toast.LENGTH_SHORT).show();
         });
 
-        refreshButton.setOnClickListener(v -> {
-            Toast.makeText(MainActivity.this, "Đang làm mới dữ liệu...", Toast.LENGTH_SHORT).show();
-            // Tải lại dữ liệu giả và cập nhật adapter để hiển thị toàn bộ sản phẩm
-            originalProductList = getDummyProducts(); // Cập nhật lại danh sách gốc
-            productAdapter.setProducts(new ArrayList<>(originalProductList)); // Cập nhật adapter với danh sách mới
-            searchView.setQuery("", false); // Xóa thanh tìm kiếm sau khi làm mới
-        });
+
     }
 
-    /**
-     * Cung cấp danh sách danh mục giả lập cho mục đích minh họa.
-     * Đảm bảo các tài nguyên drawable (ví dụ: R.drawable.goi) tồn tại trong project của bạn.
-     * @return Một danh sách các đối tượng Category.
-     */
+   
     private List<Category> getDummyCategories() {
         List<Category> categories = new ArrayList<>();
         categories.add(new Category("Khai vị", R.drawable.goi));

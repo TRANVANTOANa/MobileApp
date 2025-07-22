@@ -132,7 +132,7 @@ public class PaymentActivity extends AppCompatActivity {
         }
 
         // Hiển thị QR Code (ví dụ)
-        qrCodeImage.setImageResource(R.drawable.qr_code_placeholder); // Đảm bảo bạn có tài nguyên này
+        qrCodeImage.setImageResource(R.drawable.qrtoi); // Đảm bảo bạn có tài nguyên này
 
         // --- Thiết lập sự kiện cho nút Tải lên hóa đơn ---
         btnUploadReceipt.setOnClickListener(new View.OnClickListener() {

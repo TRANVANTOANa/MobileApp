@@ -38,15 +38,7 @@
             app:srcCompat="@drawable/ic_shopping_cart"
             android:layout_marginStart="8dp" />
 
-        <ImageButton
-            android:id="@+id/refresh_button"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/refresh_description"
-            android:src="@drawable/ic_refresh"
-            app:tint="@color/black" />
+
     </LinearLayout>
 
     <LinearLayout
